@@ -42,7 +42,8 @@ module.exports = {
             await newVenue.save();
 
             return res.status(200).json({
-                message: 'New Venue added.'
+                message: 'New Venue added.',
+                newVenue
             });
 
         } catch (e) {
