@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const status = ['booked', 'blocked'];
 const VenueAvailability = new Schema({
 
     // venueOwnerId: {
@@ -14,7 +15,10 @@ const VenueAvailability = new Schema({
     status: {
         type: String,
         required: true,
-        enum: ['booked', 'blocked'], // booked status when user booked and block status when venue owner block the date
+        enum: {
+            values: status,
+            message: `Invalid Status. eg. ${status.join(', ')}`
+        }, // booked status when user booked and block status when venue owner block the date
     },
     bookingDate: {
         type: Date,

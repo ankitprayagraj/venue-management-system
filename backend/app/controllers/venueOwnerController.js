@@ -1,12 +1,11 @@
-const Admin = require('../models/Admin.js');
 const VenueOwner = require('../models/VenueOwner.js');
-const Venue = require('../models/Venue.js');
-const Booking = require('../models/Booking.js');
-const VenueAvailability = require('../models/VenueAvailability.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongoose').Types;
+const VenueAvailability = require('../models/VenueAvailability.js');
+const Booking = require('../models/Booking.js');
+const Venue = require('../models/Venue.js');
 
 const { JWT_TOKEN_SECRET } = process.env;
 
@@ -38,11 +37,11 @@ module.exports = {
                 });
             }
 
-            const userExist = await Admin.findOne({ email: String(email) });
+            const userExist = await VenueOwner.findOne({ email: String(email) });
 
             if (userExist) {
                 return res.status(409).json({
-                    message: 'Admin is already exist.'
+                    message: 'Venue owner already exists.'
                 });
             }
 
@@ -54,7 +53,7 @@ module.exports = {
                 hashPassword
             }
 
-            const user = new Admin(userDetails);
+            const user = new VenueOwner(userDetails);
 
             const userAccount = await user.save();
 
@@ -102,11 +101,11 @@ module.exports = {
 
             const searchEmail = String(email);
 
-            const user = await Admin.findOne({ email: searchEmail });
+            const user = await VenueOwner.findOne({ email: searchEmail });
 
             if (!user) {
                 return res.status(401).json({
-                    message: 'Admin not found.'
+                    message: 'Venue owner not found.'
                 });
             }
 
@@ -138,57 +137,39 @@ module.exports = {
             });
         }
     },
-    updateVenue: async (req, res) => {
+    getVenues: async (req, res) => {
         try {
 
-            if (typeof req.body !== "object") {
-                return res.status(400).json({
-                    message: 'Please enter a valid details.'
-                });
-            }
+            const { page, pageSize } = req.query;
 
-            const { venueName, description, location, capacity, amenities, price } = req.body;
+            /* Pagination */
 
-            const { venueId } = req.params;
+            // const limit = parseInt(pageSize) || 10;
+            // const pageNumber = parseInt(page) || 1;
+            // const skip = (pageNumber - 1) * limit;
 
-            if (!ObjectId.isValid(venueId)) {
-                return res.status(400).json({
-                    message: 'Invalid venueId.'
-                });
-            }
+            const venueQuery = [{ $match: { venueOwnerId: req.user._id } }];
 
-            if (!venueName || !description || !capacity || !amenities) {
-                return res.status(400).json({
-                    message: 'Please enter valid details.'
-                });
-            }
-            else if (!price || typeof price !== 'number' || price <= 0) {
-                return res.status(400).json({
-                    message: 'Please enter a valid price.'
-                });
-            }
-            else if (!location || typeof location !== 'object') {
-                return res.status(400).json({
-                    message: 'Please enter a valid location.'
-                });
-            }
+            // if(page){
+            //     venueQuery.push(        {
+            //         $skip: skip
+            //     },
+            //     { $limit: limit })
+            //     console.log("=====",venueQuery)
+            // }
 
-            const venue = await Venue.findByIdAndUpdate({
-                _id: ObjectId.createFromHexString(venueId),
-            },
-                {
-                    venueName, description, location, capacity, amenities, price,
-                }, {
+            const venues = await Venue.aggregate(venueQuery);
+            const totalCount = await Venue.countDocuments();
 
-            });
-
-            if (!venue) {
-                return res.status(404).json({
-                    message: 'Venue not found.'
-                });
+            const data = {
+                totalCount,
+                // pageNumber,
+                // pageSize: limit,
+                venues: venues || []
             }
             return res.status(200).json({
-                message: 'Venue updated.'
+                data,
+                message: 'retrived successfully.'
             });
 
         } catch (e) {
@@ -198,60 +179,7 @@ module.exports = {
             });
         }
     },
-    venueOwnerAccountStatusUpdate: async (req, res) => {
-        try {
-
-            const { venueOwnerId } = req.params;
-            const { accountStatus } = req.body;
-
-            if (typeof venueOwnerId !== "string" && !ObjectId.isValid(venueOwnerId)) {
-                return res.status(400).json({
-                    message: 'Invalid venue owner ID.'
-                });
-            }
-
-            // const userExist = await VenueOwner.findOne({ _id: ObjectId.createFromHexString(venueOwnerId) });
-
-            if (typeof accountStatus !== 'string') {
-                return res.status(400).json({
-                    message: 'Invalid account status.'
-                });
-            }
-
-            console.log(venueOwnerId, accountStatus);
-            try {
-                const updatedStatus = await VenueOwner.updateOne(
-                    { _id: ObjectId.createFromHexString(venueOwnerId) },
-                    { $set: { accountStatus: accountStatus } },
-                    { runValidators: true }
-                );
-                console.log(updatedStatus);
-
-                return res.status(200).json({
-                    updatedStatus,
-                    message: 'Account Status updated.'
-                });
-            } catch (e) {
-
-                if (e.name === 'ValidationError') {
-                    return res.status(400).json({
-                        message: 'Invalid account status.'
-                    });
-                }
-
-                return res.status(500).json({
-                    message: 'Internal server error.'
-                });
-            }
-
-        } catch (e) {
-            console.log(e)
-            return res.status(500).json({
-                message: 'Internal server error.'
-            });
-        }
-    },
-    getBookings: async (req, res) => {
+    getBookingsByVenueOwnerId: async (req, res) => {
         try {
 
             const { page, pageSize } = req.query;
@@ -268,6 +196,9 @@ module.exports = {
                 { $lookup: { from: 'venues', localField: 'venueId', foreignField: '_id', as: 'venue' } },
                 {
                     $unwind: "$venue"
+                },
+                {
+                    $match: { "venue.venueOwnerId": userId }
                 },
                 {
                     $project: {
@@ -315,6 +246,7 @@ module.exports = {
     },
     bookingStatusUpdate: async (req, res) => {
         try {
+
 
             const { bookingId } = req.params;
             const { bookingStatus } = req.body;
@@ -502,5 +434,5 @@ module.exports = {
                 message: 'Internal server error.'
             })
         }
-    }
+    },
 }

@@ -3,6 +3,7 @@ const User = require('../models/User.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const emailService = require('../utils/emailService.js');
 
 const { JWT_TOKEN_SECRET } = process.env;
 
@@ -122,6 +123,7 @@ module.exports = {
                 expiresIn: "1m",
             })
 
+            emailService.signUpMail(user.username,user.email,req.socket.remoteAddress)
             return res.status(200).json({
                 token,
                 message: 'Account created.'

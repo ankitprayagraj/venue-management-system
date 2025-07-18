@@ -77,7 +77,7 @@ const App = () => {
                     </div>
                     <div>
                       <p className="text-gray-600 text-xs uppercase font-medium">Price:</p>
-                      <p className="text-green-600 text-lg font-bold">${venue.price}</p>
+                      <p className="text-green-600 text-lg font-bold">₹{venue.price}</p>
                     </div>
                   </div>
 
@@ -100,8 +100,8 @@ const App = () => {
                     }`}>
                       {venue.status}
                     </span>
-                    <p className="text-gray-500 text-xs">
-                      Added: {new Date(venue.createdAt).toLocaleDateString()}
+                    <p className="text-gray-500 text-xs p-2 border-green-500 border-2 rounded-lg font-semibold space-x-2">
+                      Book Now
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose
 
+const bookingStatus = ['booked', 'pending', 'failed', 'cancelled', 'payment-failed']
 const Booking = new Schema({
     venueId: {
         type: Schema.ObjectId,
@@ -20,7 +21,7 @@ const Booking = new Schema({
     },
     bookingStatus: {
         type: String,
-        enum: ['booked', 'pending', 'failed', 'cancelled', 'payment-failed'],
+        enum: { values: bookingStatus, message: `{VALUE} is not a valid status. eg. ${bookingStatus.join(', ')}` },
         default: 'pending'
     },
     price: {

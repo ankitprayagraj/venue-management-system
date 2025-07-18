@@ -20,9 +20,9 @@ module.exports = {
                 });
             }
 
-            const { venueId, userId, bookingDate, transactionId, bookingStatus, price } = req.body;
+            const { venueId, userId, bookingDate, transactionId, price } = req.body;
 
-            if (!venueId, !userId, !bookingDate, !transactionId, !bookingStatus) {
+            if (!venueId, !userId, !bookingDate, !transactionId) {
                 return res.status(400).json({
                     message: 'Please enter valid details.'
                 });
@@ -161,71 +161,6 @@ module.exports = {
                     $skip: skip
                 },
                 { $limit: limit }
-            ]);
-
-            const totalCount = await Booking.countDocuments({ userId: userId });
-
-            const data = {
-                totalCount,
-                pageNumber,
-                pageSize: limit,
-                bookings: venues || []
-            }
-            return res.status(200).json({
-                data,
-                message: 'retrived successfully.'
-            });
-
-        } catch (e) {
-            console.log(e)
-            return res.status(500).json({
-                message: 'Internal server error.'
-            });
-        }
-    },
-    getBookingsByAdminId: async (req, res) => {
-        try {
-
-            const { page, pageSize } = req.query;
-
-            const userId = ObjectId.createFromHexString(String(req.user._id));
-
-            const limit = parseInt(pageSize) || 10;
-
-            const pageNumber = parseInt(page) || 1;
-
-            const skip = (pageNumber - 1) * limit;
-
-            const venues = await Booking.aggregate([
-                { $lookup: { from: 'venues', localField: 'venueId', foreignField: '_id', as: 'venue' } },
-                {
-                    $unwind: "$venue"
-                },
-                {
-                    $match: { "venue.venueOwnerId": userId }
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        venueId: 1,
-                        userId: 1,
-                        bookingDate: 1,
-                        transactionId: 1,
-                        bookingStatus: 1,
-                        price: 1,
-                        createdAt: 1,
-                        updatedAt: 1,
-                        venueName: "$venue.venueName",
-                        description: "$venue.description",
-                        location: "$venue.location",
-                        capacity: "$venue.capacity",
-                        amenities: "$venue.amenities",
-                    }
-                }
-                // {
-                //     $skip: skip
-                // },
-                // { $limit: limit }
             ]);
 
             const totalCount = await Booking.countDocuments({ userId: userId });

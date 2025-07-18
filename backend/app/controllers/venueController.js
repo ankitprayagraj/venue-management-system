@@ -47,7 +47,6 @@ module.exports = {
             });
 
         } catch (e) {
-            console.log(e)
             return res.status(500).json({
                 message: 'Internal server error.'
             });
@@ -89,7 +88,7 @@ module.exports = {
             }
 
             const venue = await Venue.findByIdAndUpdate({ _id: ObjectId.createFromHexString(venueId), 
-                // venueOwnerId:ObjectId.createFromHexString(req.user._id) 
+                venueOwnerId:req.user._id 
             },
                 {
                     venueName, description, location, capacity, amenities, price,
@@ -107,7 +106,6 @@ module.exports = {
             });
 
         } catch (e) {
-            console.log(e)
             return res.status(500).json({
                 message: 'Internal server error.'
             });
@@ -166,9 +164,9 @@ module.exports = {
                 });
             }
 
-         const venue = await Venue.findByIdAndDelete(venueId);
-console.log(venue);
-            if (!venue) {
+         const venue = await Venue.findOneAndDelete({_id:venueId, venueOwnerId:req.user._id});
+
+         if (!venue) {
                 return res.status(401).json({
                     message: 'Venue not found.'
                 });
@@ -179,7 +177,6 @@ console.log(venue);
             });
 
         } catch (e) {
-            console.log(e)
             return res.status(500).json({
                 message: 'Internal server error.'
             });

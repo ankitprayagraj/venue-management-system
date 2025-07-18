@@ -1,0 +1,150 @@
+const userSignupTemplate = {
+  "author": "Ankit kashyap",
+  "schemas": [
+    [
+      {
+        "type": "svg",
+        "position": { "x": 20, "y": 30 },
+        "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z\" />\n</svg>\n",
+        "width": 24,
+        "height": 24,
+        "readOnly": true,
+        "name": "logo"
+      },
+      {
+        "type": "text",
+        "position": { "x": 50, "y": 30 },
+        "content": "Login Successful",
+        "width": 140,
+        "height": 24,
+        "rotate": 0,
+        "alignment": "left",
+        "verticalAlignment": "middle  ",
+        "fontSize": 20,
+        "lineHeight": 1,
+        "characterSpacing": 0,
+        "fontColor": "#000000",
+        "backgroundColor": "",
+        "opacity": 1,
+        "readOnly": true,
+        "fontName": "",
+        "name": "title"
+      },
+      {
+        "type": "text",
+        "position": { "x": 20, "y": 60 },
+        "content": "Welcome, {username}",
+        "width": 170,
+        "height": 20,
+        "rotate": 0,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "fontSize": 14,
+        "lineHeight": 1,
+        "characterSpacing": 0,
+        "fontColor": "#000000",
+        "backgroundColor": "",
+        "opacity": 1,
+        "readOnly": true,
+        "fontName": "",
+        "name": "welcome"
+      },
+      {
+        "type": "text",
+        "position": { "x": 20, "y": 90 },
+        "content": "You have successfully logged in at {login_time} from IP address {ip_address}.",
+        "width": 170,
+        "height": 40,
+        "rotate": 0,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "fontSize": 14,
+        "lineHeight": 1.2,
+        "characterSpacing": 0,
+        "fontColor": "#000000",
+        "backgroundColor": "",
+        "opacity": 1,
+        "readOnly": true,
+        "fontName": "",
+        "name": "loginDetails"
+      },
+      {
+        "type": "text",
+        "position": { "x": 20, "y": 140 },
+        "content": "If you did not perform this login, please contact us at {contact_email}.",
+        "width": 170,
+        "height": 40,
+        "rotate": 0,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "fontSize": 14,
+        "lineHeight": 1.2,
+        "characterSpacing": 0,
+        "fontColor": "#000000",
+        "backgroundColor": "",
+        "opacity": 1,
+        "readOnly": true,
+        "fontName": "",
+        "name": "securityMessage"
+      }
+    ]
+  ],
+  "basePdf": {
+    "width": 210,
+    "height": 297,
+    "padding": [20, 20, 20, 20],
+    "staticSchema": [
+      {
+        "name": "header",
+        "type": "text",
+        "content": "{company_name}",
+        "position": { "x": 20, "y": 10 },
+        "width": 170,
+        "height": 10,
+        "rotate": 0,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "fontSize": 12,
+        "lineHeight": 1,
+        "characterSpacing": 0,
+        "fontColor": "#999999",
+        "backgroundColor": "",
+        "opacity": 1,
+        "readOnly": true
+      },
+      {
+        "name": "line",
+        "type": "line",
+        "position": { "x": 20, "y": 279 },
+        "width": 170,
+        "height": 0.2,
+        "rotate": 0,
+        "opacity": 1,
+        "readOnly": true,
+        "color": "#999999",
+        "content": ""
+      },
+      {
+        "name": "footerInfo",
+        "type": "text",
+        "content": "For any inquiries, contact {contact_email}",
+        "position": { "x": 20, "y": 282 },
+        "width": 170,
+        "height": 10,
+        "rotate": 0,
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "fontSize": 13,
+        "lineHeight": 1,
+        "characterSpacing": 0,
+        "fontColor": "#000000",
+        "backgroundColor": "",
+        "opacity": 1,
+        "readOnly": true
+      }
+    ]
+  },
+  "pdfmeVersion": "5.0.0"
+};
+
+module.exports = {userSignupTemplate}
