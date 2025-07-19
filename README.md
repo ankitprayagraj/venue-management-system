@@ -25,5 +25,5 @@ For example:
 ## Basic Authentication for Admin and Venue Owners
 
 - I have already added authentication for admins, and currently, admins can create and manage venues.
-- We can add a separate table for venue owners and give features to admins so admins can manage these venue owners.
+- Added features to admins so admins can manage these venue owners.
 - I will make features for venue owners to create and manage venues.
