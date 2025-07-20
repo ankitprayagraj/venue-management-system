@@ -21,7 +21,7 @@ const MONGODB_URI = process.env.MONGODB_URI || '';
 connectDB(MONGODB_URI);
 
 const app = express();
-
+app.disable('x-powered-by');
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
@@ -42,13 +42,15 @@ app.use("/venue-owner", verifyVenueOwner, venueOwnerRoutes);
 
 app.get('/test', (req, res) => {
 
-    console.log('=====', req.headers['X-Forwarded'])
+    console.log('=====',req.ip)
     return res.status(200).json({
         message: 'all ok',
         // req: JSON.stringify(req)
     })
 })
 
-app.listen(PORT, () => {
+const appListening = app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`)
 });
+
+console.log("===Request address===",appListening.address()?.address)

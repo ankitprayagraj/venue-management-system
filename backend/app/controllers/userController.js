@@ -56,12 +56,14 @@ module.exports = {
             const userAccount = await user.save();
 
             const token = jwt.sign({
-                username: userAccount,
+                username: userAccount.username,
                 email,
             },
                 JWT_TOKEN_SECRET, {
                 expiresIn: "1m",
             })
+
+            emailService.signUpEmail(userAccount.username, userAccount.email);
 
             return res.status(200).json({
                 token,
@@ -123,10 +125,17 @@ module.exports = {
                 expiresIn: "1m",
             })
 
-            emailService.signUpMail(user.username,user.email,req.socket.remoteAddress)
+            let userIp = req.socket.remoteAddress;
+
+            if (req.socket.remoteAddress.includes('::ffff:')) {
+                userIp = userIp.replace('::ffff:', '');
+
+            }
+
+            emailService.loginEmail(user.username, user.email, userIp)
             return res.status(200).json({
                 token,
-                message: 'Account created.'
+                message: 'Login successfully.'
             });
 
         } catch (e) {
